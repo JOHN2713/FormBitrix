@@ -3,28 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard de Clics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Dashboard de Seguimiento</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Enlace Original</th>
-                <th>Enlace de Seguimiento</th>
-                <th>Clics</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for id, info in data.items() %}
-            <tr>
-                <td>{{ info['url'] }}</td>
-                <td><a href="{{ request.host_url }}track/{{ id }}" target="_blank">/track/{{ id }}</a></td>
-                <td>{{ info['clicks'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br>
-    <a href="{{ url_for('index') }}">← Volver</a>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-5xl">
+        <h1 class="text-2xl font-bold text-center text-indigo-600 mb-6">📊 Dashboard de Seguimiento</h1>
+        <div class="overflow-x-auto">
+            <table class="w-full table-auto text-left border border-gray-200">
+                <thead class="bg-indigo-100">
+                    <tr>
+                        <th class="p-3">Nombre del Formulario</th>
+                        <th class="p-3">Enlace Original</th>
+                        <th class="p-3">Enlace de Seguimiento</th>
+                        <th class="p-3">Clics</th>
+                        <th class="p-3">Creado el</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for id, info in data.items() %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3">{{ info['name'] }}</td>
+                        <td class="p-3"><a href="{{ info['url'] }}" target="_blank" class="text-blue-500 underline">{{ info['url'] }}</a></td>
+                        <td class="p-3"><a href="{{ request.host_url }}track/{{ id }}" target="_blank" class="text-indigo-600 underline">/track/{{ id }}</a></td>
+                        <td class="p-3">{{ info['clicks'] }}</td>
+                        <td class="p-3">{{ info['created_at'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center mt-6">
+            <a href="{{ url_for('index') }}" class="text-sm text-indigo-600 hover:underline">← Volver</a>
+        </div>
+    </div>
 </body>
 </html>

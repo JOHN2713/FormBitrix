@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 import json
 import os
 from uuid import uuid4
+from datetime import datetime
+
 
 app = Flask(__name__)
 DATA_FILE = 'data/clicks.json'
@@ -28,16 +30,19 @@ def save_data(data):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        original_url = request.form['url']
-        tracking_id = str(uuid4())
+        form_url = request.form['url']
+        form_name = request.form['name']
+        tracking_id = generate_short_id()
         data = load_data()
         data[tracking_id] = {
-            'url': original_url,
-            'clicks': 0
+            'url': form_url,
+            'name': form_name,
+            'clicks': 0,
+            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         save_data(data)
         tracking_link = request.host_url + 'track/' + tracking_id
-        return render_template('index.html', tracking_link=tracking_link)
+        return render_template('index.html', tracking_link=tracking_link, form_name=form_name)
     return render_template('index.html')
 
 @app.route('/track/<tracking_id>')
