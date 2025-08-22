@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Enlaces</title>
+</head>
+<body>
+    <h1>Seguimiento de Formularios</h1>
+    <form method="post">
+        <label>Ingresa la URL del formulario:</label><br>
+        <input type="url" name="url" required>
+        <button type="submit">Generar enlace</button>
+    </form>
+
+    {% if tracking_link %}
+        <p><strong>Enlace de seguimiento:</strong></p>
+        <p><a href="{{ tracking_link }}" target="_blank">{{ tracking_link }}</a></p>
+    {% endif %}
+    <hr>
+    <a href="{{ url_for('dashboard') }}">Ver dashboard</a>
+</body>
+</html>

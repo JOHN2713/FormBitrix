@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard de Clics</title>
+</head>
+<body>
+    <h1>Dashboard de Seguimiento</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Enlace Original</th>
+                <th>Enlace de Seguimiento</th>
+                <th>Clics</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, info in data.items() %}
+            <tr>
+                <td>{{ info['url'] }}</td>
+                <td><a href="{{ request.host_url }}track/{{ id }}" target="_blank">/track/{{ id }}</a></td>
+                <td>{{ info['clicks'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="{{ url_for('index') }}">← Volver</a>
+</body>
+</html>
