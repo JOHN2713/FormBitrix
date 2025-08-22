@@ -9,6 +9,8 @@ from flask import Response
 import csv
 
 app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "form_links.db")
 # Configuración de la base de datos SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///form_links.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -30,6 +32,11 @@ with app.app_context():
 # Función para generar ID corto
 def generate_short_id(length=6):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+@app.route('/health')
+def health():
+    return "ok", 200
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
