@@ -2,38 +2,67 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard de Clics</title>
+    <title>Dashboard de Seguimiento</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-5xl">
+    <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-6xl">
         <h1 class="text-2xl font-bold text-center text-indigo-600 mb-6">📊 Dashboard de Seguimiento</h1>
+
+        <div class="text-right mb-4">
+            <a href="{{ url_for('export') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                📤 Exportar CSV
+            </a>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full table-auto text-left border border-gray-200">
-                <thead class="bg-indigo-100">
+                <thead class="bg-indigo-100 text-indigo-800 font-semibold">
                     <tr>
                         <th class="p-3">Nombre del Formulario</th>
                         <th class="p-3">Enlace Original</th>
                         <th class="p-3">Enlace de Seguimiento</th>
                         <th class="p-3">Clics</th>
                         <th class="p-3">Creado el</th>
+                        <th class="p-3">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {% for id, info in data.items() %}
+                <tbody class="text-gray-700">
+                    {% for link in links %}
                     <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3">{{ info['name'] }}</td>
-                        <td class="p-3"><a href="{{ info['url'] }}" target="_blank" class="text-blue-500 underline">{{ info['url'] }}</a></td>
-                        <td class="p-3"><a href="{{ request.host_url }}track/{{ id }}" target="_blank" class="text-indigo-600 underline">/track/{{ id }}</a></td>
-                        <td class="p-3">{{ info['clicks'] }}</td>
-                        <td class="p-3">{{ info['created_at'] }}</td>
+                        <td class="p-3">{{ link.name }}</td>
+                        <td class="p-3 break-all">
+                            <a href="{{ link.url }}" target="_blank" class="text-blue-600 hover:underline">
+                                {{ link.url }}
+                            </a>
+                        </td>
+                        <td class="p-3 break-all">
+                            <a href="{{ request.host_url }}track/{{ link.id }}" target="_blank" class="text-indigo-600 hover:underline">
+                                {{ request.host_url }}track/{{ link.id }}
+                            </a>
+                        </td>
+                        <td class="p-3 text-center">{{ link.clicks }}</td>
+                        <td class="p-3 text-sm">{{ link.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td class="p-3">
+                            <div class="flex gap-2 items-center">
+                                <a href="{{ url_for('edit', tracking_id=link.id) }}" class="text-blue-600 hover:underline">✏️</a>
+                                <form method="POST" action="{{ url_for('delete', tracking_id=link.id) }}" onsubmit="return confirm('¿Estás seguro de eliminar este enlace?')">
+                                    <button type="submit" class="text-red-600 hover:underline">🗑️</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="p-4 text-center text-gray-500">No hay enlaces registrados aún.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
         <div class="text-center mt-6">
-            <a href="{{ url_for('index') }}" class="text-sm text-indigo-600 hover:underline">← Volver</a>
+            <a href="{{ url_for('index') }}" class="text-sm text-indigo-600 hover:underline">← Volver a inicio</a>
         </div>
     </div>
 </body>
