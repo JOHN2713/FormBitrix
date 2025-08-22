@@ -9,11 +9,25 @@ from flask import Response
 import csv
 
 app = Flask(__name__)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "form_links.db")
-# Configuración de la base de datos SQLite
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///form_links.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# --- DB CONFIG: PostgreSQL en prod, SQLite en local como fallback ---
+DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
+
+# Render y otros providers a veces entregan "postgres://..." (antiguo)
+# SQLAlchemy necesita "postgresql+psycopg2://..."
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    DATABASE_URL if DATABASE_URL else "sqlite:///form_links.db"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Opcional (robustez de conexión)
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,        # reconecta si la conexión se cae
+    "pool_recycle": 300,          # recicla conexiones cada 5 minutos
+}
+
 db = SQLAlchemy(app)
 
 # Modelo
